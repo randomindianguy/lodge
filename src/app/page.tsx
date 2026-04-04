@@ -91,19 +91,23 @@ export default function Home() {
           </div>
 
           {/* Build mode */}
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6">
+          <Link href="/build/social-map" className="block rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6 hover:border-[var(--success)]/50 transition-colors group">
             <div className="w-10 h-10 rounded-lg bg-[var(--success)]/10 flex items-center justify-center mb-4">
               <Repeat size={20} className="text-[var(--success)]" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">Build mode</h3>
+            <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+              Build mode
+              <ArrowRight size={14} className="text-[var(--muted)] group-hover:text-[var(--success)] transition-colors" />
+            </h3>
             <p className="text-sm text-[var(--muted)] mb-4 leading-relaxed">
-              You go to the gym alone. Cook dinner alone. Walk in the park
-              alone. Not by choice — by default. Lodge turns your solo routines
-              into shared rituals. Tell it what you do. It creates a shareable
-              invite. Send it to the coworker you kind of vibe with.
+              Tell Lodge everything you do alone — gym, walks, cooking,
+              errands. AI analyzes your entire week and finds the moments
+              where adding one person would be easiest, most natural, and
+              most likely to stick. Not a suggestion engine — a social
+              opportunity map of your actual life.
             </p>
             <div className="flex flex-wrap gap-2">
-              {["Ritual Blueprint AI", "Shareable invite link", "Session scaffolding"].map(
+              {["Social Opportunity Map", "Multi-factor scoring", "Session scaffolding"].map(
                 (tag) => (
                   <span
                     key={tag}
@@ -114,7 +118,7 @@ export default function Home() {
                 )
               )}
             </div>
-          </div>
+          </Link>
         </div>
       </section>
 
