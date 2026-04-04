@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import {
   Plus,
@@ -70,7 +69,8 @@ const scoreColor = (score: number) => {
 
 export default function SocialMapPage() {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
+  const map = useRef<any>(null);
+  const mapboxglRef = useRef<any>(null);
 
   const [city, setCity] = useState("");
   const [name, setName] = useState("");
@@ -174,7 +174,7 @@ export default function SocialMapPage() {
       setStep("map");
 
       // 3. Init the map after state updates
-      setTimeout(() => initMap(geocoded, data.socialMap), 200);
+      setTimeout(() => initMap(geocoded, data.socialMap), 500);
     } catch {
       alert("Failed to generate. Check your OpenAI API key.");
     } finally {
@@ -182,9 +182,13 @@ export default function SocialMapPage() {
     }
   };
 
-  const initMap = (geocodedRoutines: Routine[], socialMap: SocialMapResult) => {
+  const initMap = async (geocodedRoutines: Routine[], socialMap: SocialMapResult) => {
     if (!mapContainer.current || map.current) return;
     if (!geocodedRoutines.some((r) => r.lng && r.lat)) return;
+
+    // Dynamic import to avoid SSR issues
+    const mapboxgl = (await import("mapbox-gl")).default;
+    mapboxglRef.current = mapboxgl;
 
     mapboxgl.accessToken = MAPBOX_TOKEN;
 
