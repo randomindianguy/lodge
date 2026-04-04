@@ -109,6 +109,17 @@ export default function SocialMapPage() {
     (r) => r.activity.trim() && r.days.trim() && r.time.trim()
   );
 
+  // Init map when step changes to "map"
+  useEffect(() => {
+    if (step === "map" && result && !map.current) {
+      // Small delay to ensure DOM is rendered
+      const timer = setTimeout(() => {
+        initMap(routines, result);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [step, result]);
+
   // Geocode a location string → [lng, lat]
   const geocode = async (
     query: string,
@@ -149,9 +160,6 @@ export default function SocialMapPage() {
         })
       );
 
-      // Update routines with coordinates
-      setRoutines(geocoded);
-
       // 2. Call the Social Map AI
       const res = await fetch("/api/social-map", {
         method: "POST",
@@ -171,10 +179,8 @@ export default function SocialMapPage() {
       if (!res.ok) throw new Error("Failed");
       const data = await res.json();
       setResult(data.socialMap);
+      setRoutines(geocoded);
       setStep("map");
-
-      // 3. Init the map after state updates
-      setTimeout(() => initMap(geocoded, data.socialMap), 500);
     } catch {
       alert("Failed to generate. Check your OpenAI API key.");
     } finally {
@@ -328,7 +334,7 @@ export default function SocialMapPage() {
 
         <div className="flex-1 flex relative">
           {/* Map */}
-          <div ref={mapContainer} className="flex-1" />
+          <div ref={mapContainer} className="flex-1" style={{ minHeight: "400px" }} />
 
           {/* Weekly insight banner */}
           {result.weekly_insight && !selectedOpp && (
