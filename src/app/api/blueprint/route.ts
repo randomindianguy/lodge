@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabase";
 
 export async function POST(req: NextRequest) {
   try {
-    const { routine, city, day_time, group_size, keeper_name, keeper_phone } =
+    const { routine, city, day_time, group_size, keeper_name, keeper_phone, lng, lat, routine_type } =
       await req.json();
 
     if (!routine || !city || !day_time) {
@@ -93,6 +93,9 @@ Respond with valid JSON only:
         group_size: group_size || 2,
         framing_copy: blueprint.framing_copy,
         session_scaffolding: blueprint.session_scaffolding,
+        lng: lng || null,
+        lat: lat || null,
+        routine_type: routine_type || "other",
       })
       .select()
       .single();
