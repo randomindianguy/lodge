@@ -304,69 +304,126 @@ function PhoneApp() {
 
   // ===== INPUT VIEW =====
   return (
-    <div className="px-4 pt-3 pb-4 overflow-y-auto h-full">
-      <div className="mb-4">
-        <h1 className="text-[14px] font-bold">Your weekly routines</h1>
-        <p className="text-[10px] text-[var(--muted)]">Add what you do alone. AI maps where to add a person.</p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-2 mb-3">
-        <div>
-          <label className="block text-[10px] font-medium mb-0.5">Name</label>
-          <input type="text" placeholder="First name" value={name} onChange={(e) => setName(e.target.value)} className="w-full text-[12px] py-1.5 px-2" />
-        </div>
-        <div>
-          <label className="block text-[10px] font-medium mb-0.5">City</label>
-          <input type="text" placeholder="Denver, CO" value={city} onChange={(e) => setCity(e.target.value)} className="w-full text-[12px] py-1.5 px-2" />
-        </div>
-      </div>
-
-      {routines.length === 0 && (
-        <div className="mb-3">
-          <p className="text-[9px] text-[var(--muted)] mb-1">Quick add:</p>
-          <div className="flex flex-wrap gap-1">
-            {QUICK_ADD.map((qa, i) => (
-              <button key={i} onClick={() => addRoutine(qa)} className="px-2 py-0.5 rounded-full text-[9px] border border-[var(--border)] hover:border-[var(--accent)] text-[var(--muted)] hover:text-[var(--foreground)] transition-all">
-                + {qa.activity}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="space-y-2 mb-2">
-        {routines.map((routine, i) => (
-          <div key={routine.id} className="p-2 rounded-lg border border-[var(--border)] bg-[var(--surface)]">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[8px] text-[var(--muted)] uppercase tracking-wide">Routine {i + 1}</span>
-              <button onClick={() => removeRoutine(routine.id)} className="text-[var(--muted)] hover:text-[var(--danger)]"><X size={10} /></button>
+    <div className="flex flex-col h-full">
+      {/* Scrollable content area */}
+      <div className="flex-1 overflow-y-auto px-5 pt-6 pb-4">
+        {/* Header — strong visual hierarchy */}
+        <div className="mb-5">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-7 h-7 rounded-lg bg-[var(--accent)]/15 flex items-center justify-center">
+              <Brain size={14} className="text-[var(--accent-light)]" />
             </div>
-            <div className="grid grid-cols-2 gap-1">
-              <input type="text" placeholder="What" defaultValue={routine.activity} onBlur={(e) => updateRoutine(routine.id, "activity", e.target.value)} className="col-span-2 text-[11px] py-1 px-2" />
-              <input type="text" placeholder="Days" defaultValue={routine.days} onBlur={(e) => updateRoutine(routine.id, "days", e.target.value)} className="text-[11px] py-1 px-2" />
-              <input type="text" placeholder="Time" defaultValue={routine.time} onBlur={(e) => updateRoutine(routine.id, "time", e.target.value)} className="text-[11px] py-1 px-2" />
-              <input type="text" placeholder="Where" defaultValue={routine.location} onBlur={(e) => updateRoutine(routine.id, "location", e.target.value)} className="text-[11px] py-1 px-2" />
-              <input type="text" placeholder="Duration" defaultValue={routine.duration} onBlur={(e) => updateRoutine(routine.id, "duration", e.target.value)} className="text-[11px] py-1 px-2" />
+            <div>
+              <h1 className="text-[15px] font-bold leading-tight">Your weekly routines</h1>
             </div>
           </div>
-        ))}
+          <p className="text-[11px] text-[var(--muted)] leading-relaxed">
+            Add what you do alone — gym, walks, cooking, coffee. AI will analyze your week and find where adding a person would stick.
+          </p>
+        </div>
+
+        {/* Name + City — grouped with clear affordance */}
+        <div className="grid grid-cols-2 gap-2 mb-5">
+          <div>
+            <label className="block text-[10px] font-medium mb-1 text-[var(--muted)]">Your name</label>
+            <input type="text" placeholder="First name" value={name} onChange={(e) => setName(e.target.value)} className="w-full text-[12px] py-2 px-3 rounded-xl" />
+          </div>
+          <div>
+            <label className="block text-[10px] font-medium mb-1 text-[var(--muted)]">City you moved to</label>
+            <input type="text" placeholder="Denver, CO" value={city} onChange={(e) => setCity(e.target.value)} className="w-full text-[12px] py-2 px-3 rounded-xl" />
+          </div>
+        </div>
+
+        {/* Quick add — prominent when empty, visual signifier that these are tappable */}
+        {routines.length === 0 && (
+          <div className="mb-5">
+            <p className="text-[10px] font-medium text-[var(--accent-light)] mb-2">
+              Tap to add your routines:
+            </p>
+            <div className="grid grid-cols-2 gap-1.5">
+              {QUICK_ADD.map((qa, i) => (
+                <button
+                  key={i}
+                  onClick={() => addRoutine(qa)}
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--accent)] hover:bg-[var(--accent)]/5 text-left transition-all group"
+                >
+                  <div className="w-5 h-5 rounded-md bg-[var(--accent)]/10 flex items-center justify-center shrink-0 group-hover:bg-[var(--accent)]/20 transition-colors">
+                    <Plus size={10} className="text-[var(--accent-light)]" />
+                  </div>
+                  <span className="text-[10px] text-[var(--muted)] group-hover:text-[var(--foreground)] transition-colors leading-tight">{qa.activity}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Routine cards — Gestalt proximity groups each card */}
+        {routines.length > 0 && (
+          <>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[10px] font-medium text-[var(--accent-light)]">
+                {routines.length} routine{routines.length !== 1 ? "s" : ""} added
+              </p>
+              <p className="text-[9px] text-[var(--muted)]">min 2 to analyze</p>
+            </div>
+
+            <div className="space-y-2 mb-3">
+              {routines.map((routine, i) => (
+                <div key={routine.id} className="p-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-4 h-4 rounded-md bg-[var(--accent)]/10 flex items-center justify-center">
+                        <span className="text-[8px] font-bold text-[var(--accent-light)]">{i + 1}</span>
+                      </div>
+                      <span className="text-[9px] text-[var(--muted)]">{routine.activity || "New routine"}</span>
+                    </div>
+                    <button onClick={() => removeRoutine(routine.id)} className="text-[var(--muted)] hover:text-[var(--danger)] p-0.5"><X size={10} /></button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <input type="text" placeholder="What (e.g. gym)" defaultValue={routine.activity} onBlur={(e) => updateRoutine(routine.id, "activity", e.target.value)} className="col-span-2 text-[11px] py-1.5 px-2.5 rounded-lg" />
+                    <input type="text" placeholder="Days" defaultValue={routine.days} onBlur={(e) => updateRoutine(routine.id, "days", e.target.value)} className="text-[11px] py-1.5 px-2.5 rounded-lg" />
+                    <input type="text" placeholder="Time" defaultValue={routine.time} onBlur={(e) => updateRoutine(routine.id, "time", e.target.value)} className="text-[11px] py-1.5 px-2.5 rounded-lg" />
+                    <input type="text" placeholder="Where" defaultValue={routine.location} onBlur={(e) => updateRoutine(routine.id, "location", e.target.value)} className="text-[11px] py-1.5 px-2.5 rounded-lg" />
+                    <input type="text" placeholder="How long" defaultValue={routine.duration} onBlur={(e) => updateRoutine(routine.id, "duration", e.target.value)} className="text-[11px] py-1.5 px-2.5 rounded-lg" />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Add more + quick chips */}
+            <button onClick={() => addRoutine()} className="w-full py-2 rounded-xl border border-dashed border-[var(--border)] text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--foreground)] flex items-center justify-center gap-1.5 text-[10px] transition-all mb-2">
+              <Plus size={10} /> Add another routine
+            </button>
+
+            {routines.length < 6 && (
+              <div className="flex flex-wrap gap-1 mb-3">
+                {QUICK_ADD.filter((qa) => !routines.some((r) => r.activity.toLowerCase() === qa.activity.toLowerCase())).map((qa, i) => (
+                  <button key={i} onClick={() => addRoutine(qa)} className="px-2 py-0.5 rounded-full text-[8px] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--accent)] transition-all">+ {qa.activity}</button>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Empty state hint — fills the void, reduces uncertainty */}
+        {routines.length === 0 && (
+          <div className="mt-4 p-3 rounded-xl bg-[var(--surface)]/50 border border-[var(--border)]/50">
+            <p className="text-[10px] text-[var(--muted)] leading-relaxed text-center">
+              <span className="text-[var(--accent-light)] font-medium">How it works:</span> Add 2+ routines → AI scores each on 6 factors → map shows your best social opportunity windows with reasoning.
+            </p>
+          </div>
+        )}
       </div>
 
-      <button onClick={() => addRoutine()} className="w-full py-1.5 rounded-lg border border-dashed border-[var(--border)] text-[var(--muted)] hover:border-[var(--accent)] flex items-center justify-center gap-1 text-[10px] transition-colors mb-2">
-        <Plus size={10} /> Add routine
-      </button>
-
-      {routines.length > 0 && routines.length < 6 && (
-        <div className="flex flex-wrap gap-1 mb-3">
-          {QUICK_ADD.filter((qa) => !routines.some((r) => r.activity.toLowerCase() === qa.activity.toLowerCase())).map((qa, i) => (
-            <button key={i} onClick={() => addRoutine(qa)} className="px-1.5 py-0.5 rounded-full text-[8px] border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] transition-all">+ {qa.activity}</button>
-          ))}
-        </div>
-      )}
-
-      <button onClick={generate} disabled={validRoutines.length < 2 || generating || !city.trim()} className="w-full py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-40 bg-[var(--accent)] hover:bg-[var(--accent-light)] text-white text-[13px]">
-        {generating ? (<><Loader2 size={14} className="animate-spin" /> Analyzing...</>) : (<><MapPin size={14} /> Generate map <ArrowRight size={12} /></>)}
-      </button>
+      {/* Sticky bottom CTA — always visible, clear affordance */}
+      <div className="shrink-0 px-5 pb-4 pt-2 border-t border-[var(--border)]/50 bg-[var(--phone-bg)]">
+        <button onClick={generate} disabled={validRoutines.length < 2 || generating || !city.trim()} className="w-full py-3 rounded-2xl font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-30 bg-[var(--accent)] hover:bg-[var(--accent-light)] text-white text-[13px] shadow-lg shadow-[var(--accent)]/20">
+          {generating ? (<><Loader2 size={14} className="animate-spin" /> Analyzing {validRoutines.length} routines...</>) : (<><MapPin size={14} /> Generate Social Map <ArrowRight size={12} /></>)}
+        </button>
+        {validRoutines.length < 2 && routines.length > 0 && (
+          <p className="text-[9px] text-[var(--muted)] text-center mt-1.5">Add {2 - validRoutines.length} more routine{2 - validRoutines.length !== 1 ? "s" : ""} to analyze</p>
+        )}
+      </div>
     </div>
   );
 }
