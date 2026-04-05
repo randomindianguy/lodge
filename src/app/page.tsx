@@ -215,7 +215,7 @@ function PhoneApp() {
   // ===== MAP VIEW =====
   if (step === "map" && result) {
     return (
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col" style={{ height: "100%", minHeight: 0 }}>
         <div className="flex items-center gap-2 px-3 py-2 border-b border-[var(--border)] bg-[var(--surface)] shrink-0">
           <button onClick={() => { setStep("input"); setResult(null); map.current?.remove(); map.current = null; setSelectedOpp(null); }} className="p-1 rounded-lg hover:bg-[var(--surface-hover)]">
             <ChevronLeft size={14} />
@@ -229,8 +229,8 @@ function PhoneApp() {
           </div>
         </div>
 
-        <div className="flex-1 relative">
-          <div ref={mapContainer} className="absolute inset-0" />
+        <div className="relative" style={{ flex: "1 1 0%", minHeight: "0" }}>
+          <div ref={mapContainer} style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, width: "100%", height: "100%" }} />
           {result.weekly_insight && !selectedOpp && (
             <div className="absolute top-2 left-2 right-2 rounded-lg bg-[var(--surface)]/95 backdrop-blur-sm p-2 shadow-lg z-10 border border-[var(--accent)]/20">
               <div className="flex items-start gap-1.5">
@@ -241,7 +241,7 @@ function PhoneApp() {
           )}
         </div>
 
-        <div className="shrink-0 border-t border-[var(--border)] bg-[var(--surface)] max-h-[40%] overflow-y-auto">
+        <div className="shrink-0 border-t border-[var(--border)] bg-[var(--surface)] max-h-[35%] overflow-y-auto">
           {selectedOpp ? (
             <div className="p-3">
               <div className="flex items-start justify-between mb-2">
@@ -421,7 +421,7 @@ export default function HomePage() {
           <div className="relative w-[375px] h-[780px] rounded-[44px] border-[5px] border-[#1a1a1a] bg-[var(--background)] shadow-[0_0_80px_rgba(99,102,241,0.06)] overflow-hidden flex flex-col">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120px] h-[30px] bg-black rounded-b-[14px] z-50" />
             <div className="h-[44px] shrink-0" />
-            <div className="flex-1 overflow-hidden relative">
+            <div className="flex-1 overflow-hidden relative flex flex-col">
               <PhoneApp />
             </div>
             <div className="h-[26px] flex items-end justify-center pb-1 shrink-0">
